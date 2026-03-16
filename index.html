@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> <link rel="icon" href="https://img.icons8.com/fluency/48/t.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechThread Elite | Growth Command Center</title><title>TechThread Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background-color: #050505;
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.3) 0, transparent 50%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+        }
+        .neon-btn {
+            background: linear-gradient(90deg, #4f46e5, #9333ea);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+            transition: all 0.3s ease;
+        }
+        .neon-btn:hover {
+            box-shadow: 0 0 25px rgba(147, 51, 234, 0.6);
+            transform: translateY(-2px);
+        }
+        .hidden-section { display: none; }
+    </style>
+</head>
+<body class="p-6">
+
+    <nav class="max-w-[1400px] mx-auto flex justify-between items-center mb-10">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-bold text-2xl shadow-2xl">T</div>
+            <span class="text-2xl font-bold tracking-tighter uppercase">TechThread <span class="text-indigo-400 font-black italic">PRO</span></span>
+        </div>
+        <div id="user-nav" class="flex items-center gap-6"></div>
+    </nav>
+
+    <div id="auth-section" class="max-w-md mx-auto mt-32 glass-card p-10 text-center">
+        <h2 class="text-4xl font-bold mb-4">Command Center</h2>
+        <input type="email" id="email" placeholder="strategist@email.com" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500">
+        <button onclick="signIn()" id="authBtn" class="w-full neon-btn py-4 rounded-xl font-bold uppercase tracking-widest">Authorize Access</button>
+    </div>
+
+    <main id="app-section" class="hidden-section max-w-[1400px] mx-auto grid grid-cols-12 gap-6">
+        
+        <div class="col-span-12 lg:col-span-3 space-y-6">
+            <a href="https://x.com/Joe_Wills1" target="_blank" class="block glass-card p-6 border-l-4 border-l-indigo-500 hover:bg-white/5 transition-all group">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 group-hover:scale-110 transition-transform">
+                        <img src="https://unavatar.io/twitter/Joe_Wills1" class="w-full h-full rounded-full object-cover border-2 border-black" alt="X Profile">
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg group-hover:text-indigo-400">JOE WILLS</h4>
+                        <p class="text-indigo-400 text-xs font-bold uppercase tracking-tighter">Growth Strategist</p>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-white/5 flex justify-between text-sm">
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">Tap to visit profile</span>
+                    <span class="text-indigo-400 font-black italic">→</span>
+                </div>
+            </a>
+
+            <div class="glass-card p-6">
+                <textarea id="userInput" rows="10" class="w-full bg-black/20 border border-white/5 rounded-xl p-4 text-slate-300 outline-none focus:border-indigo-500 mb-4 resize-none" placeholder="Paste technical notes here..."></textarea>
+                <button onclick="generateThread()" id="genBtn" class="w-full neon-btn py-4 rounded-xl font-black uppercase text-sm tracking-widest">Generate Content</button>
+            </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-9">
+            <div class="glass-card min-h-[600px] p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold italic">Generated <span class="text-indigo-500">Threads</span></h2>
+                    <button onclick="copyContent()" class="bg-white/5 hover:bg-white/10 px-6 py-2 rounded-lg text-xs font-bold">COPY ALL</button>
+                </div>
+                <div id="output" class="text-slate-200 text-xl leading-relaxed whitespace-pre-wrap font-light"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Paste your keys below!
+        const SB_URL = 'https://jlcotzxaqmafljaezses.supabase.co'; 
+        const SB_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
+        const GEMINI_KEY = 'AIzaSyAEuGMSwS96eM_pyl9qrKh3BgmHcSITX-o';
+
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+
+        async function checkUser() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                document.getElementById('auth-section').classList.add('hidden-section');
+                document.getElementById('app-section').classList.remove('hidden-section');
+                document.getElementById('user-nav').innerHTML = `<span class="text-slate-400 text-sm font-bold">${user.email}</span> <button onclick="signOut()" class="text-red-400 text-xs uppercase font-bold ml-4">Logout</button>`;
+            }
+        }
+        checkUser();
+
+        async function signIn() {
+            const email = document.getElementById('email').value;
+            const btn = document.getElementById('authBtn');
+            if (!email) return alert("Enter email!");
+            btn.innerText = "Processing...";
+            const { error } = await supabaseClient.auth.signInWithOtp({ email });
+            if (error) alert(error.message);
+            else alert("Magic Link Sent!");
+            btn.innerText = "Authorize Access";
+        }
+
+        async function signOut() { await supabaseClient.auth.signOut(); window.location.reload(); }
+
+        async function generateThread() {
+            const input = document.getElementById('userInput').value;
+            const btn = document.getElementById('genBtn');
+            if (!input) return;
+            btn.innerText = "ENGINE THINKING...";
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: "Rewrite this as a viral 5-tweet technical thread for X. Use spacing and emojis. Content: " + input }] }] })
+                });
+                const data = await res.json();
+                document.getElementById('output').innerText = data.candidates[0].content.parts[0].text;
+            } catch (e) { alert("Error!"); }
+            btn.innerText = "Generate Content";
+        }
+
+        function copyContent() {
+            navigator.clipboard.writeText(document.getElementById('output').innerText);
+            alert("Copied!");
+        }
+    </script>
+</body>
+</html>
