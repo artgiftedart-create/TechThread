@@ -1,141 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <link rel="icon" href="https://img.icons8.com/fluency/48/t.png" type="image/x-icon">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechThread Elite | Growth Command Center</title><title>TechThread Pro</title>
+    <title>TechThread Pro</title>
+    <link rel="icon" href="https://img.icons8.com/fluency/48/t.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+      { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
+    </script>
+
     <style>
-        body { 
-            font-family: 'Space Grotesk', sans-serif; 
-            background-color: #050505;
-            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.3) 0, transparent 50%);
-            color: #ffffff;
+        :root {
+            --bg: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --accent: #8b5cf6; /* Futuristic Purple */
+            --text: #f8fafc;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, var(--bg));
+            color: var(--text);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+
+        #app {
+            width: 90%;
+            max-width: 900px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
             border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .neon-btn {
-            background: linear-gradient(90deg, #4f46e5, #9333ea);
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-            transition: all 0.3s ease;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
         }
-        .neon-btn:hover {
-            box-shadow: 0 0 25px rgba(147, 51, 234, 0.6);
+
+        h1 {
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            padding: 15px;
+            font-family: inherit;
+            resize: none;
+            transition: border 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        button {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        button:hover {
             transform: translateY(-2px);
+            background: #7c3aed;
         }
-        .hidden-section { display: none; }
+
+        #output {
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            border-left: 4px solid var(--accent);
+            display: none;
+        }
+
+        .auth-view { text-align: center; }
+        .hidden { display: none; }
+        .status { font-size: 0.8rem; color: #94a3b8; margin-top: 10px; }
     </style>
 </head>
-<body class="p-6">
+<body>
 
-    <nav class="max-w-[1400px] mx-auto flex justify-between items-center mb-10">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-bold text-2xl shadow-2xl">T</div>
-            <span class="text-2xl font-bold tracking-tighter uppercase">TechThread <span class="text-indigo-400 font-black italic">PRO</span></span>
+    <div id="app">
+        <div id="auth-section" class="auth-view">
+            <h1>TechThread Pro</h1>
+            <p style="color: #94a3b8;">Futuristic Content Engine</p>
+            <input type="email" id="email" placeholder="Enter your email" style="width: 80%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #000; color: #fff; margin-bottom: 15px;">
+            <button onclick="signIn()">Enter System</button>
+            <div id="auth-status" class="status"></div>
         </div>
-        <div id="user-nav" class="flex items-center gap-6"></div>
-    </nav>
 
-    <div id="auth-section" class="max-w-md mx-auto mt-32 glass-card p-10 text-center">
-        <h2 class="text-4xl font-bold mb-4">Command Center</h2>
-        <input type="email" id="email" placeholder="strategist@email.com" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500">
-        <button onclick="signIn()" id="authBtn" class="w-full neon-btn py-4 rounded-xl font-bold uppercase tracking-widest">Authorize Access</button>
+        <div id="dashboard" class="hidden">
+            <div class="header">
+                <h1>TechThread Pro</h1>
+                <button onclick="signOut()" style="width: auto; padding: 8px 15px; font-size: 0.8rem; background: transparent; border: 1px solid var(--border);">Log Out</button>
+            </div>
+
+            <div class="input-group">
+                <textarea id="sourceText" placeholder="Paste technical data or insights here..."></textarea>
+            </div>
+            
+            <button id="generateBtn" onclick="generateThread()">GENERATE VIRAL THREAD</button>
+            <div id="loading" class="status hidden">INITIALIZING AI ENGINE...</div>
+            
+            <div id="output"></div>
+        </div>
     </div>
 
-    <main id="app-section" class="hidden-section max-w-[1400px] mx-auto grid grid-cols-12 gap-6">
-        
-        <div class="col-span-12 lg:col-span-3 space-y-6">
-            <a href="https://x.com/Joe_Wills1" target="_blank" class="block glass-card p-6 border-l-4 border-l-indigo-500 hover:bg-white/5 transition-all group">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 group-hover:scale-110 transition-transform">
-                        <img src="https://unavatar.io/twitter/Joe_Wills1" class="w-full h-full rounded-full object-cover border-2 border-black" alt="X Profile">
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-lg group-hover:text-indigo-400">JOE WILLS</h4>
-                        <p class="text-indigo-400 text-xs font-bold uppercase tracking-tighter">Growth Strategist</p>
-                    </div>
-                </div>
-                <div class="pt-4 border-t border-white/5 flex justify-between text-sm">
-                    <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">Tap to visit profile</span>
-                    <span class="text-indigo-400 font-black italic">→</span>
-                </div>
-            </a>
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
 
-            <div class="glass-card p-6">
-                <textarea id="userInput" rows="10" class="w-full bg-black/20 border border-white/5 rounded-xl p-4 text-slate-300 outline-none focus:border-indigo-500 mb-4 resize-none" placeholder="Paste technical notes here..."></textarea>
-                <button onclick="generateThread()" id="genBtn" class="w-full neon-btn py-4 rounded-xl font-black uppercase text-sm tracking-widest">Generate Content</button>
-            </div>
-        </div>
-
-        <div class="col-span-12 lg:col-span-9">
-            <div class="glass-card min-h-[600px] p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-3xl font-bold italic">Generated <span class="text-indigo-500">Threads</span></h2>
-                    <button onclick="copyContent()" class="bg-white/5 hover:bg-white/10 px-6 py-2 rounded-lg text-xs font-bold">COPY ALL</button>
-                </div>
-                <div id="output" class="text-slate-200 text-xl leading-relaxed whitespace-pre-wrap font-light"></div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        // Paste your keys below!
-        const SB_URL = 'https://jlcotzxaqmafljaezses.supabase.co'; 
-        const SB_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
+        // CONFIGURATION - UPDATE THESE!
+        const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
+        const SUPABASE_KEY = 'sb_secret_ZgNFBTfsaI_8EnzZHEA1_g_LTrL1GxC';
         const GEMINI_KEY = 'AIzaSyAEuGMSwS96eM_pyl9qrKh3BgmHcSITX-o';
 
-        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        const supabase = bootstrapSupabase.createClient(https://jlcotzxaqmafljaezses.supabase.co, sb_secret_ZgNFBTfsaI_8EnzZHEA1_g_LTrL1GxC);
+        const genAI = new GoogleGenerativeAI(AIzaSyAEuGMSwS96eM_pyl9qrKh3BgmHcSITX-o);
 
-        async function checkUser() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (user) {
-                document.getElementById('auth-section').classList.add('hidden-section');
-                document.getElementById('app-section').classList.remove('hidden-section');
-                document.getElementById('user-nav').innerHTML = `<span class="text-slate-400 text-sm font-bold">${user.email}</span> <button onclick="signOut()" class="text-red-400 text-xs uppercase font-bold ml-4">Logout</button>`;
-            }
-        }
-        checkUser();
-
-        async function signIn() {
+        // --- AUTH LOGIC ---
+        window.signIn = async () => {
             const email = document.getElementById('email').value;
-            const btn = document.getElementById('authBtn');
-            if (!email) return alert("Enter email!");
-            btn.innerText = "Processing...";
-            const { error } = await supabaseClient.auth.signInWithOtp({ email });
-            if (error) alert(error.message);
-            else alert("Magic Link Sent!");
-            btn.innerText = "Authorize Access";
+            const { error } = await supabase.auth.signInWithOtp({ 
+                email,
+                options: { emailRedirectTo: window.location.href }
+            });
+            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check your email.";
         }
 
-        async function signOut() { await supabaseClient.auth.signOut(); window.location.reload(); }
+        window.signOut = async () => {
+            await supabase.auth.signOut();
+            location.reload();
+        }
 
-        async function generateThread() {
-            const input = document.getElementById('userInput').value;
-            const btn = document.getElementById('genBtn');
-            if (!input) return;
-            btn.innerText = "ENGINE THINKING...";
+        // Check user session on load
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+            }
+        });
+
+        // --- AI LOGIC ---
+        window.generateThread = async () => {
+            const input = document.getElementById('sourceText').value;
+            const btn = document.getElementById('generateBtn');
+            const output = document.getElementById('output');
+            const loading = document.getElementById('loading');
+
+            if (!input) return alert("Please provide data first.");
+
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: "Rewrite this as a viral 5-tweet technical thread for X. Use spacing and emojis. Content: " + input }] }] })
-                });
-                const data = await res.json();
-                document.getElementById('output').innerText = data.candidates[0].content.parts[0].text;
-            } catch (e) { alert("Error!"); }
-            btn.innerText = "Generate Content";
-        }
+                btn.disabled = true;
+                loading.classList.remove('hidden');
+                output.style.display = 'none';
 
-        function copyContent() {
-            navigator.clipboard.writeText(document.getElementById('output').innerText);
-            alert("Copied!");
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const prompt = `You are an expert Social Media Growth Strategist. Convert this text into a 3-5 tweet high-engagement X thread with emojis and hooks: ${input}`;
+                
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                
+                output.innerText = response.text();
+                output.style.display = 'block';
+            } catch (err) {
+                alert("AI Engine Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                loading.classList.add('hidden');
+            }
         }
     </script>
 </body>
