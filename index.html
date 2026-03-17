@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechThread Pro | Viral Content Engine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>TechThread Pro | Growth Strategist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="importmap">
       { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
@@ -12,127 +12,118 @@
 
     <style>
         :root {
-            --primary: #6d5dfc;
-            --secondary: #ff4b2b;
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glass: rgba(255, 255, 255, 0.15);
+            /* High-End Dark Palette */
+            --bg: #1a1a1a; 
+            --text: #e2e8f0;
+            --shadow-light: #252525;
+            --shadow-dark: #0f0f0f;
+            --accent: #8b5cf6; /* Modern Purple */
         }
 
         body {
             margin: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: white;
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
             width: 90%;
-            max-width: 850px;
-            padding: 40px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            max-width: 650px;
+            padding: 50px;
+            border-radius: 40px;
+            background: var(--bg);
+            box-shadow: 15px 15px 30px var(--shadow-dark),
+                       -10px -10px 30px var(--shadow-light);
+            position: relative;
         }
 
-        h1 {
-            font-weight: 800;
-            font-size: 2.8rem;
-            margin: 0;
-            background: linear-gradient(to right, #fff, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .description-box {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0 35px 0;
-            border-left: 4px solid var(--primary);
-        }
-
-        .description-box p {
-            margin: 5px 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #e2e8f0;
-        }
-
-        .input-area {
+        /* Neumorphic Inset (Inputs) */
+        .neu-inset {
+            background: var(--bg);
+            border-radius: 16px;
+            box-shadow: inset 6px 6px 12px var(--shadow-dark),
+                        inset -6px -6px 12px var(--shadow-light);
+            border: none;
+            padding: 18px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 20px;
-            color: white;
-            font-family: inherit;
-            font-size: 1rem;
-            outline: none;
             box-sizing: border-box;
-            transition: 0.3s;
+            color: var(--text);
+            font-family: inherit;
+            outline: none;
+            font-size: 1rem;
         }
 
-        .input-area:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #fff;
-        }
-
-        .btn-vibrant {
+        /* Neumorphic Button (Raised) */
+        .neu-button {
+            margin-top: 25px;
             width: 100%;
             padding: 18px;
-            margin-top: 20px;
-            border-radius: 15px;
+            border-radius: 16px;
+            background: var(--bg);
+            box-shadow: 6px 6px 12px var(--shadow-dark),
+                        -6px -6px 12px var(--shadow-light);
             border: none;
-            background: linear-gradient(to right, #6d5dfc, #ff4b2b);
-            color: white;
+            color: var(--accent);
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
-        .btn-vibrant:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        .neu-button:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark),
+                        inset -4px -4px 8px var(--shadow-light);
+            transform: scale(0.98);
         }
 
-        .x-fab {
+        h1 { text-align: center; font-weight: 800; font-size: 2.2rem; margin-bottom: 8px; letter-spacing: -1px; }
+        
+        /* Fine Text Description */
+        .fine-print {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: #888;
+            margin-bottom: 35px;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        /* Floating X Button */
+        .x-link {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: white;
             width: 60px;
             height: 60px;
             border-radius: 50%;
+            background: var(--bg);
+            box-shadow: 6px 6px 12px var(--shadow-dark), 
+                        -6px -6px 12px var(--shadow-light);
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
             transition: 0.3s;
         }
 
-        .x-fab:hover { transform: scale(1.1); }
-        .x-fab svg { width: 25px; height: 25px; fill: black; }
-
-        #output {
-            margin-top: 25px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px dashed rgba(255, 255, 255, 0.3);
-            display: none;
-            white-space: pre-wrap;
+        .x-link:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
         }
 
+        .x-link svg { width: 22px; height: 22px; fill: #fff; }
+
+        #output { margin-top: 30px; display: none; white-space: pre-wrap; color: #cbd5e0; line-height: 1.6; }
         .hidden { display: none; }
+        
+        .status-msg { text-align: center; margin-top: 20px; font-size: 0.9rem; font-weight: 600; color: var(--accent); }
     </style>
 </head>
 <body>
@@ -140,51 +131,51 @@
     <div class="container">
         <div id="auth-section">
             <h1>TechThread Pro</h1>
-            <div class="description-box">
-                <p><strong>🚀 Content Transmutation:</strong> Turn long-form audio podcasts, video interviews, and technical deep-dives into viral X threads in seconds.</p>
-                <p><strong>🧠 Strategic Intelligence:</strong> Built for growth managers who need to maintain high engagement across multiple platforms with minimal effort.</p>
+            <div class="fine-print">
+                AI-driven transmutation of audio, video, and podcast transcripts <br> into viral content for strategic engagement.
             </div>
-            <input type="email" id="email" class="input-area" placeholder="Enter your email to begin...">
-            <button class="btn-vibrant" onclick="signIn()">Proceed</button>
-            <p id="auth-status" style="text-align: center; margin-top: 15px; font-weight: 600;"></p>
+            <input type="email" id="email" class="neu-inset" placeholder="Email address">
+            <button class="neu-button" onclick="signIn()">Proceed</button>
+            <p id="auth-status" class="status-msg"></p>
         </div>
 
         <div id="dashboard" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h1 style="font-size: 1.5rem;">Command Center</h1>
-                <button onclick="signOut()" style="background:none; border: 1px solid #fff; color:#fff; padding: 5px 15px; border-radius: 10px; cursor:pointer;">Logout</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h1 style="font-size: 1.4rem; margin: 0;">Command Center</h1>
+                <button onclick="signOut()" style="background:none; border:none; color:#fc8181; font-weight:600; cursor:pointer; font-size: 0.8rem;">Logout</button>
             </div>
-            
-            <textarea id="sourceText" class="input-area" style="height: 200px;" placeholder="Paste transcript from your video or audio podcast here..."></textarea>
-            
-            <button id="generateBtn" class="btn-vibrant" onclick="generateThread()">Generate Viral Content</button>
-            
-            <div id="loading" class="hidden" style="text-align:center; margin-top:20px;">⚡ Analyzing Media Data...</div>
-            <div id="output"></div>
+            <textarea id="sourceText" class="neu-inset" style="height: 200px; resize: none;" placeholder="Paste transcript or media data here..."></textarea>
+            <button id="generateBtn" class="neu-button" onclick="generateThread()">Generate Viral Content</button>
+            <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #666;">⚡ PROCESSING STRATEGY...</div>
+            <div id="output" class="neu-inset"></div>
         </div>
     </div>
 
-    <a href="https://x.com/Joe_Wills1" target="_blank" class="x-fab">
+    <a href="https://x.com/Joe_Wills1" target="_blank" class="x-link" title="Visit Profile">
         <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
     </a>
 
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // CONFIGURATION - PASTE KEYS HERE
+        // --- PASTE YOUR API KEYS BELOW ---
         const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
         const SUPABASE_KEY = 'sb_secret_ZgNFBTfsaI_8EnzZHEA1_g_LTrL1GxC';
         const GEMINI_KEY = 'AIzaSyAEuGMSwS96eM_pyl9qrKh3BgmHcSITX-o';
 
+        // Bootstrapping Supabase (assuming the global helper is available via the script tag)
         const supabase = bootstrapSupabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
         window.signIn = async () => {
             const email = document.getElementById('email').value;
+            if(!email) return alert("Please enter email");
+            
             const { error } = await supabase.auth.signInWithOtp({ 
                 email,
                 options: { emailRedirectTo: window.location.origin + window.location.pathname }
             });
+            // Custom message as requested
             document.getElementById('auth-status').innerText = error ? error.message : "Sent an email. Check your inbox!";
         }
 
@@ -193,6 +184,7 @@
             location.reload();
         }
 
+        // Listen for Auth Session
         supabase.auth.onAuthStateChange((event, session) => {
             if (session) {
                 document.getElementById('auth-section').classList.add('hidden');
@@ -200,19 +192,20 @@
             }
         });
 
+        // AI Generation Logic
         window.generateThread = async () => {
             const input = document.getElementById('sourceText').value;
             const output = document.getElementById('output');
             const loading = document.getElementById('loading');
 
-            if (!input) return alert("Please paste content first!");
+            if (!input) return alert("Input field is empty.");
 
             try {
                 loading.classList.remove('hidden');
                 output.style.display = 'none';
 
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                const prompt = `You are an elite Growth Strategist. Transmute this podcast/video transcript into a 4-tweet viral thread. Include a massive hook, bullet points for key insights, and a CTA: ${input}`;
+                const prompt = `As a Growth Strategist, convert this podcast/video transcript into a viral 4-tweet thread for X. Use a hook, key insights, and emojis: ${input}`;
                 
                 const result = await model.generateContent(prompt);
                 const response = await result.response;
@@ -220,7 +213,7 @@
                 output.innerText = response.text();
                 output.style.display = 'block';
             } catch (err) {
-                alert("AI Error: " + err.message);
+                alert("Core Error: " + err.message);
             } finally {
                 loading.classList.add('hidden');
             }
