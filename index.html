@@ -3,111 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechThread Pro | Growth Strategist</title>
+    <title>TechThread Pro | Omni-Channel</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="importmap">
       { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
     </script>
-
     <style>
-        :root {
-            --bg: #1a1a1a; 
-            --text: #e2e8f0;
-            --shadow-light: #252525;
-            --shadow-dark: #0f0f0f;
-            --accent: #8b5cf6;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 600px;
-            padding: 50px;
-            border-radius: 40px;
-            background: var(--bg);
-            box-shadow: 15px 15px 30px var(--shadow-dark),
-                       -10px -10px 30px var(--shadow-light);
-        }
-
-        .neu-inset {
-            background: var(--bg);
-            border-radius: 16px;
-            box-shadow: inset 6px 6px 12px var(--shadow-dark),
-                        inset -6px -6px 12px var(--shadow-light);
-            border: none;
-            padding: 18px;
-            width: 100%;
-            box-sizing: border-box;
-            color: var(--text);
-            font-family: inherit;
-            outline: none;
-        }
-
-        .neu-button {
-            margin-top: 25px;
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            background: var(--bg);
-            box-shadow: 6px 6px 12px var(--shadow-dark),
-                        -6px -6px 12px var(--shadow-light);
-            border: none;
-            color: var(--accent);
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .neu-button:active {
-            box-shadow: inset 4px 4px 8px var(--shadow-dark),
-                        inset -4px -4px 8px var(--shadow-light);
-            transform: scale(0.98);
-        }
-
-        h1 { text-align: center; font-weight: 800; font-size: 2.2rem; margin-bottom: 8px; }
-        
-        .fine-print {
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 300;
-            color: #888;
-            margin-bottom: 35px;
-        }
-
-        .x-link {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--bg);
-            box-shadow: 6px 6px 12px var(--shadow-dark), 
-                        -6px -6px 12px var(--shadow-light);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .x-link svg { width: 22px; height: 22px; fill: #fff; }
-
-        #output { margin-top: 30px; display: none; white-space: pre-wrap; color: #cbd5e0; }
+        :root { --bg: #1a1a1a; --text: #e2e8f0; --shadow-light: #252525; --shadow-dark: #0f0f0f; --accent: #8b5cf6; }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { width: 95%; max-width: 650px; padding: 40px; border-radius: 40px; background: var(--bg); box-shadow: 15px 15px 30px var(--shadow-dark), -10px -10px 30px var(--shadow-light); }
+        .neu-inset { background: var(--bg); border-radius: 16px; box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); border: none; padding: 18px; width: 100%; box-sizing: border-box; color: var(--text); outline: none; margin-bottom: 15px; }
+        .neu-button { width: 100%; padding: 18px; border-radius: 16px; background: var(--bg); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); border: none; color: var(--accent); font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 10px; }
+        .neu-button:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: scale(0.98); }
+        select.neu-inset { appearance: none; cursor: pointer; color: var(--accent); font-weight: 600; }
+        #output-container { margin-top: 30px; display: none; }
+        .copy-btn { background: #333; color: #fff; font-size: 0.7rem; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; margin-top: 10px; width: 100%; }
         .hidden { display: none; }
-        .status-msg { text-align: center; margin-top: 20px; font-size: 0.9rem; font-weight: 600; color: var(--accent); }
+        h1 { text-align: center; font-weight: 800; margin-bottom: 5px; }
+        .tagline { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 30px; }
     </style>
 </head>
 <body>
@@ -115,56 +29,50 @@
     <div class="container">
         <div id="auth-section">
             <h1>TechThread Pro</h1>
-            <div class="fine-print">
-                AI transmutation of audio, video, and podcast transcripts <br> into viral content for strategic engagement.
-            </div>
-            <input type="email" id="email" class="neu-inset" placeholder="Enter email">
-            <button class="neu-button" onclick="signIn()">Proceed</button>
-            <p id="auth-status" class="status-msg"></p>
+            <div class="tagline">Omni-Channel Content Transmutation</div>
+            <input type="email" id="email" class="neu-inset" placeholder="Strategist Email">
+            <button class="neu-button" onclick="signIn()">Enter Command Center</button>
+            <p id="auth-status" style="text-align:center; color: var(--accent);"></p>
         </div>
 
         <div id="dashboard" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h1 style="font-size: 1.4rem; margin: 0;">Command Center</h1>
-                <button onclick="signOut()" style="background:none; border:none; color:#fc8181; font-weight:600; cursor:pointer; font-size: 0.8rem;">Logout</button>
+            <h1 style="font-size: 1.2rem; text-align: left;">Source Input</h1>
+            
+            <select id="contentType" class="neu-inset">
+                <option value="youtube">YouTube / Web Link</option>
+                <option value="spotify">Spotify Podcast Transcript</option>
+                <option value="x_facebook">X / FB Post Text</option>
+                <option value="general">General Audio Transcript</option>
+            </select>
+
+            <textarea id="sourceData" class="neu-inset" style="height: 150px; resize: none;" placeholder="Paste Link OR Content Text here..."></textarea>
+            
+            <button class="neu-button" onclick="transmute()">Transmute Content</button>
+            
+            <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #8b5cf6;">⚡ ANALYZING SIGNAL...</div>
+            
+            <div id="output-container">
+                <div id="output" class="neu-inset" style="white-space: pre-wrap;"></div>
+                <button class="copy-btn" onclick="copyResult()">Copy to Clipboard</button>
             </div>
-            <textarea id="sourceText" class="neu-inset" style="height: 200px; resize: none;" placeholder="Paste transcript data here..."></textarea>
-            <button id="generateBtn" class="neu-button" onclick="generateThread()">Generate Viral Content</button>
-            <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #666;">⚡ PROCESSING STRATEGY...</div>
-            <div id="output" class="neu-inset"></div>
         </div>
     </div>
-
-    <a href="https://x.com/Joe_Wills1" target="_blank" class="x-link">
-        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
-    </a>
 
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // CONFIGURATION - RE-PASTE YOUR KEYS HERE
+        // CONFIG (Replace with your keys)
         const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
+        const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY';
         const GEMINI_KEY = 'AIzaSyAEuGMSwS96eM_pyl9qrKh3BgmHcSITX-o';
 
-        // FIXED: Using standard supabase initialization
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
         window.signIn = async () => {
             const email = document.getElementById('email').value;
-            if(!email) return alert("Email required");
-            
-            const { error } = await supabase.auth.signInWithOtp({ 
-                email,
-                options: { emailRedirectTo: window.location.origin + window.location.pathname }
-            });
-            document.getElementById('auth-status').innerText = error ? error.message : "Sent an email. Check your inbox!";
-        }
-
-        window.signOut = async () => {
-            await supabase.auth.signOut();
-            location.reload();
+            const { error } = await supabase.auth.signInWithOtp({ email });
+            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent!";
         }
 
         supabase.auth.onAuthStateChange((event, session) => {
@@ -174,30 +82,41 @@
             }
         });
 
-        window.generateThread = async () => {
-            const input = document.getElementById('sourceText').value;
+        window.transmute = async () => {
+            const type = document.getElementById('contentType').value;
+            const data = document.getElementById('sourceData').value;
             const output = document.getElementById('output');
             const loading = document.getElementById('loading');
 
-            if (!input) return alert("Input field is empty.");
+            if (!data) return alert("Please provide a link or text.");
 
             try {
                 loading.classList.remove('hidden');
-                output.style.display = 'none';
+                document.getElementById('output-container').style.display = 'none';
 
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                const prompt = `Convert this podcast/video transcript into a viral 4-tweet thread for X. Include a hook and strategic emojis: ${input}`;
                 
+                const prompt = `Act as a Viral Growth Strategist. 
+                Source Type: ${type}
+                Source Content: ${data}
+                
+                Task: Transmute this into a high-engagement 4-tweet thread for X. 
+                Focus: Blockchain infrastructure ($HBAR, $TAO), AI, and institutional adoption.
+                Format: Use a curiosity-gap hook, 2 core insights, and a predictive closing tweet. Use professional yet hype-driven emojis.`;
+
                 const result = await model.generateContent(prompt);
-                const response = await result.response;
-                
-                output.innerText = response.text();
-                output.style.display = 'block';
+                output.innerText = result.response.text();
+                document.getElementById('output-container').style.display = 'block';
             } catch (err) {
-                alert("Core Error: " + err.message);
+                alert("Error: " + err.message);
             } finally {
                 loading.classList.add('hidden');
             }
+        }
+
+        window.copyResult = () => {
+            navigator.clipboard.writeText(document.getElementById('output').innerText);
+            alert("Copied!");
         }
     </script>
 </body>
