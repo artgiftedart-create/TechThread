@@ -47,52 +47,63 @@
     </div>
 
     <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
+    import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // CONFIG
-        const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
-        const GEMINI_KEY = 'AIzaSyCmIiIrCk5Hq9zOns2-gTcewG7lbfnQitk'; // <--- PUT YOUR NEW KEY HERE
+    // 1. CONFIGURATION
+    const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
+    // IMPORTANT: Use a NEW key from AI Studio here
+    const GEMINI_KEY = 'AIzaSyCmIiIrCk5Hq9zOns2-gTcewG7lbfnQitk'; 
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
-        window.signIn = async () => {
-            const email = document.getElementById('email').value;
-            const { error } = await supabase.auth.signInWithOtp({ 
-                email,
-                options: { emailRedirectTo: window.location.origin + window.location.pathname }
-            });
-            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check your inbox.";
-        }
-
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-            }
+    // 2. AUTHENTICATION LOGIC
+    window.signIn = async () => {
+        const email = document.getElementById('email').value;
+        const { error } = await supabase.auth.signInWithOtp({ 
+            email,
+            options: { emailRedirectTo: window.location.origin + window.location.pathname }
         });
+        document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check your email.";
+    }
 
-        window.transmute = async () => {
-            const data = document.getElementById('sourceData').value;
-            const output = document.getElementById('output');
-            const loading = document.getElementById('loading');
+    // 3. THREAD GENERATION LOGIC
+    window.transmute = async () => {
+        const data = document.getElementById('sourceData').value;
+        const output = document.getElementById('output');
+        const loading = document.getElementById('loading');
 
-            if (!data) return alert("Please provide a link or content text.");
+        if (!data) return alert("Please provide a link or content.");
 
-            try {
-                loading.classList.remove('hidden');
-                document.getElementById('output-container').style.display = 'none';
+        try {
+            loading.classList.remove('hidden');
+            document.getElementById('output-container').style.display = 'none';
 
-                // Use the standard stable model
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                
-                const prompt = `Act as a Viral Growth Strategist. Analyze this content: ${data}. 
-                Generate a viral 4-tweet thread for X with a hook, insights, and emojis. 
-                Focus on blockchain infrastructure ($HBAR, $TAO) if relevant.`;
+            // Use the correct model name for 2026 to avoid 404 errors
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
+            
+            const prompt = `Act as a Viral Growth Strategist. Analyze: ${data}. 
+            Create a viral 4-tweet thread for X. Focus on $HBAR or $TAO if mentioned.`;
 
-                const result = await model.generateContent(prompt);
-                output.innerText = result.response.text();
+            const result = await model.generateContent(prompt);
+            output.innerText = result.response.text();
+            document.getElementById('output-container').style.display = 'block';
+        } catch (err) {
+            alert("API Error: " + err.message);
+        } finally {
+            loading.classList.add('hidden');
+        }
+    }
+
+    // Monitor login state
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (session) {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+    });
+</script>
                 document.getElementById('output-container').style.display = 'block';
             } catch (err) {
                 alert("System Error: " + err.message);
