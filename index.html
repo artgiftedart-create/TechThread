@@ -49,10 +49,10 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // YOUR SECURE KEYS (INJECTED)
+        // CONFIG
         const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
-        const GEMINI_KEY = 'AIzaSyAEuGMSwS96eM_pyl9qrKh3BgmHcSITX-o';
+        const GEMINI_KEY = 'AIzaSyCmIiIrCk5Hq9zOns2-gTcewG7lbfnQitk'; // <--- PUT YOUR NEW KEY HERE
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const genAI = new GoogleGenerativeAI(GEMINI_KEY);
@@ -84,15 +84,12 @@
                 loading.classList.remove('hidden');
                 document.getElementById('output-container').style.display = 'none';
 
-                // FIXED: Using the 2026 stable Gemini 3.1 Flash-Lite model
-                const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" });
+                // Use the standard stable model
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                 
-                const prompt = `Act as a Viral Growth Strategist. Analyze this content signal: ${data}. 
-                1. If it's a URL (YouTube, X, Facebook, Spotify), use your internal knowledge to summarize the core value.
-                2. If it's a transcript, extract the most bullish insights.
-                Task: Create a 4-tweet viral thread for X. 
-                Focus: Blockchain tech, specifically $HBAR and $TAO if relevant. 
-                Style: High-authority, professional, and hype-aware. Use clear spacing and emojis.`;
+                const prompt = `Act as a Viral Growth Strategist. Analyze this content: ${data}. 
+                Generate a viral 4-tweet thread for X with a hook, insights, and emojis. 
+                Focus on blockchain infrastructure ($HBAR, $TAO) if relevant.`;
 
                 const result = await model.generateContent(prompt);
                 output.innerText = result.response.text();
