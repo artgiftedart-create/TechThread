@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechThread Pro | Omni-Channel</title>
+    <title>TechThread Pro | Growth Strategist</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="importmap">
@@ -11,7 +11,7 @@
     </script>
     <style>
         :root { --bg: #1a1a1a; --text: #e2e8f0; --shadow-light: #252525; --shadow-dark: #0f0f0f; --accent: #8b5cf6; }
-        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
         .container { width: 95%; max-width: 650px; padding: 40px; border-radius: 40px; background: var(--bg); box-shadow: 15px 15px 30px var(--shadow-dark), -10px -10px 30px var(--shadow-light); }
         .neu-inset { background: var(--bg); border-radius: 16px; box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); border: none; padding: 18px; width: 100%; box-sizing: border-box; color: var(--text); outline: none; margin-bottom: 15px; font-family: inherit; }
         .neu-button { width: 100%; padding: 18px; border-radius: 16px; background: var(--bg); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); border: none; color: var(--accent); font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 10px; }
@@ -19,7 +19,7 @@
         #output-container { margin-top: 30px; display: none; }
         .copy-btn { background: #333; color: #fff; font-size: 0.7rem; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; margin-top: 10px; width: 100%; }
         .hidden { display: none; }
-        h1 { text-align: center; font-weight: 800; margin-bottom: 5px; }
+        h1 { text-align: center; font-weight: 800; margin: 0 0 10px 0; }
         .tagline { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 30px; }
     </style>
 </head>
@@ -31,94 +31,90 @@
             <div class="tagline">Omni-Channel Content Transmutation</div>
             <input type="email" id="email" class="neu-inset" placeholder="Strategist Email">
             <button class="neu-button" onclick="signIn()">Enter Command Center</button>
-            <p id="auth-status" style="text-align:center; color: var(--accent);"></p>
+            <p id="auth-status" style="text-align:center; color: var(--accent); font-size: 0.9rem; margin-top: 15px;"></p>
         </div>
 
         <div id="dashboard" class="hidden">
             <h1 style="font-size: 1.2rem; text-align: left;">Signal Input</h1>
-            <textarea id="sourceData" class="neu-inset" style="height: 150px; resize: none;" placeholder="Paste Link (X, YT, Spotify, FB) or Podcast Transcript..."></textarea>
+            <textarea id="sourceData" class="neu-inset" style="height: 150px; resize: none;" placeholder="Paste Link (X, YT, Spotify) or Podcast Transcript..."></textarea>
             <button class="neu-button" onclick="transmute()">Transmute Content</button>
+            
             <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #8b5cf6;">⚡ ANALYZING SIGNAL...</div>
+            
             <div id="output-container">
-                <div id="output" class="neu-inset" style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.5;"></div>
+                <div id="output" class="neu-inset" style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;"></div>
                 <button class="copy-btn" onclick="copyResult()">Copy to Clipboard</button>
             </div>
         </div>
     </div>
 
-  <script type="module">
+    <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // 1. CONFIGURATION
+        // --- CONFIGURATION ---
         const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
-        // 🚨 GET A NEW KEY FROM AI STUDIO AND PASTE IT HERE
         const GEMINI_KEY = 'AIzaSyCmIiIrCk5Hq9zOns2-gTcewG7lbfnQitk'; 
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
-        // 2. AUTHENTICATION (FIXES "signIn is not defined")
+        // --- FUNCTIONS (Attached to window for HTML access) ---
+        
         window.signIn = async () => {
             const email = document.getElementById('email').value;
+            if(!email) return alert("Enter email first");
+            
             const { error } = await supabase.auth.signInWithOtp({ 
                 email,
                 options: { emailRedirectTo: window.location.origin + window.location.pathname }
             });
-            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check email.";
-        }
+            
+            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check your inbox.";
+        };
 
-        // 3. THREAD GENERATION (FIXES "404 Model Not Found")
         window.transmute = async () => {
             const data = document.getElementById('sourceData').value;
             const output = document.getElementById('output');
             const loading = document.getElementById('loading');
 
-            if (!data) return alert("Please provide a link or content.");
+            if (!data) return alert("Please provide a link or transcript.");
 
             try {
                 loading.classList.remove('hidden');
                 document.getElementById('output-container').style.display = 'none';
 
-                // We use gemini-1.5-flash-8b—it's the stable 2026 version.
+                // Corrected model name for 2026 stable API
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
                 
-                const prompt = `Act as a Viral Growth Strategist. Analyze: ${data}. 
-                Create a viral 4-tweet thread for X. Focus on $HBAR or $TAO if mentioned.`;
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
+                const prompt = `Act as a Viral Growth Strategist. Analyze this signal: ${data}. 
+                Generate a viral 4-tweet thread for X with a hook and emojis. 
+                Focus on blockchain ($HBAR, $TAO) if relevant.`;
+
                 const result = await model.generateContent(prompt);
                 output.innerText = result.response.text();
                 document.getElementById('output-container').style.display = 'block';
             } catch (err) {
                 alert("Strategic Error: " + err.message);
+                console.error(err);
             } finally {
                 loading.classList.add('hidden');
             }
-        }
+        };
 
-        // Monitor login state
+        window.copyResult = () => {
+            const text = document.getElementById('output').innerText;
+            navigator.clipboard.writeText(text);
+            alert("Thread copied to clipboard!");
+        };
+
+        // --- AUTH STATE MONITOR ---
         supabase.auth.onAuthStateChange((event, session) => {
             if (session) {
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
             }
         });
-    </script>
-    });
-</script>
-                document.getElementById('output-container').style.display = 'block';
-            } catch (err) {
-                alert("System Error: " + err.message);
-                console.error(err);
-            } finally {
-                loading.classList.add('hidden');
-            }
-        }
-
-        window.copyResult = () => {
-            navigator.clipboard.writeText(document.getElementById('output').innerText);
-            alert("Copied to clipboard!");
-        }
     </script>
 </body>
 </html>
