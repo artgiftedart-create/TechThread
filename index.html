@@ -36,11 +36,9 @@
 
         <div id="dashboard" class="hidden">
             <h1 style="font-size: 1.2rem; text-align: left;">Signal Input</h1>
-            <textarea id="sourceData" class="neu-inset" style="height: 150px; resize: none;" placeholder="Paste Link (X, YT, Spotify) or Podcast Transcript..."></textarea>
+            <textarea id="sourceData" class="neu-inset" style="height: 150px; resize: none;" placeholder="Paste Link or Transcript..."></textarea>
             <button class="neu-button" onclick="transmute()">Transmute Content</button>
-            
             <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #8b5cf6;">⚡ ANALYZING SIGNAL...</div>
-            
             <div id="output-container">
                 <div id="output" class="neu-inset" style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;"></div>
                 <button class="copy-btn" onclick="copyResult()">Copy to Clipboard</button>
@@ -51,7 +49,6 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // --- CONFIGURATION ---
         const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
         const GEMINI_KEY = 'AIzaSyCmIiIrCk5Hq9zOns2-gTcewG7lbfnQitk'; 
@@ -59,56 +56,41 @@
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
-        // --- FUNCTIONS (Attached to window for HTML access) ---
-        
         window.signIn = async () => {
             const email = document.getElementById('email').value;
-            if(!email) return alert("Enter email first");
-            
             const { error } = await supabase.auth.signInWithOtp({ 
                 email,
                 options: { emailRedirectTo: window.location.origin + window.location.pathname }
             });
-            
-            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check your inbox.";
-        };
+            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check email.";
+        }
 
         window.transmute = async () => {
             const data = document.getElementById('sourceData').value;
             const output = document.getElementById('output');
             const loading = document.getElementById('loading');
-
-            if (!data) return alert("Please provide a link or transcript.");
+            if (!data) return alert("Please provide input.");
 
             try {
                 loading.classList.remove('hidden');
                 document.getElementById('output-container').style.display = 'none';
-
-                // Corrected model name for 2026 stable API
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
-                
-                const prompt = `Act as a Viral Growth Strategist. Analyze this signal: ${data}. 
-                Generate a viral 4-tweet thread for X with a hook and emojis. 
-                Focus on blockchain ($HBAR, $TAO) if relevant.`;
-
+                const prompt = `Act as a Viral Growth Strategist. Analyze: ${data}. Create a viral 4-tweet thread for X.`;
                 const result = await model.generateContent(prompt);
                 output.innerText = result.response.text();
                 document.getElementById('output-container').style.display = 'block';
             } catch (err) {
-                alert("Strategic Error: " + err.message);
-                console.error(err);
+                alert("Error: " + err.message);
             } finally {
                 loading.classList.add('hidden');
             }
-        };
+        }
 
         window.copyResult = () => {
-            const text = document.getElementById('output').innerText;
-            navigator.clipboard.writeText(text);
-            alert("Thread copied to clipboard!");
-        };
+            navigator.clipboard.writeText(document.getElementById('output').innerText);
+            alert("Copied!");
+        }
 
-        // --- AUTH STATE MONITOR ---
         supabase.auth.onAuthStateChange((event, session) => {
             if (session) {
                 document.getElementById('auth-section').classList.add('hidden');
