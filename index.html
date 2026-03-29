@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TechThread Pro | Growth Strategist</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,15 +11,87 @@
     </script>
     <style>
         :root { --bg: #1a1a1a; --text: #e2e8f0; --shadow-light: #252525; --shadow-dark: #0f0f0f; --accent: #8b5cf6; }
-        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        .container { width: 95%; max-width: 650px; padding: 40px; border-radius: 40px; background: var(--bg); box-shadow: 15px 15px 30px var(--shadow-dark), -10px -10px 30px var(--shadow-light); }
-        .neu-inset { background: var(--bg); border-radius: 16px; box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); border: none; padding: 18px; width: 100%; box-sizing: border-box; color: var(--text); outline: none; margin-bottom: 15px; font-family: inherit; }
-        .neu-button { width: 100%; padding: 18px; border-radius: 16px; background: var(--bg); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); border: none; color: var(--accent); font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 10px; }
-        .neu-button:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: scale(0.98); }
-        #output-container { margin-top: 30px; display: none; }
-        .copy-btn { background: #333; color: #fff; font-size: 0.7rem; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; margin-top: 10px; width: 100%; }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 450px; /* Perfect for Laptop & Mobile */
+            padding: 30px; 
+            border-radius: 35px; 
+            background: var(--bg); 
+            box-shadow: 15px 15px 30px var(--shadow-dark), -10px -10px 30px var(--shadow-light); 
+        }
+
+        .neu-inset { 
+            background: var(--bg); 
+            border-radius: 16px; 
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); 
+            border: none; 
+            padding: 18px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            color: var(--text); 
+            outline: none; 
+            margin-bottom: 20px; 
+            font-family: inherit; 
+            font-size: 16px; 
+        }
+
+        .neu-button { 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 16px; 
+            background: var(--bg); 
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); 
+            border: none; 
+            color: var(--accent); 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+        }
+
+        .neu-button:active { 
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); 
+            transform: scale(0.98);
+        }
+
+        .social-footer {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .x-link {
+            display: inline-block;
+            transition: transform 0.2s;
+            padding: 10px;
+        }
+
+        .x-link:hover { transform: scale(1.15); }
+
+        .x-icon {
+            width: 28px;
+            height: 28px;
+            fill: var(--text);
+        }
+
+        #output-container { margin-top: 25px; display: none; }
         .hidden { display: none; }
-        h1 { text-align: center; font-weight: 800; margin: 0 0 10px 0; }
+        h1 { text-align: center; font-size: 1.6rem; margin: 0 0 5px 0; letter-spacing: -0.5px; }
         .tagline { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 30px; }
     </style>
 </head>
@@ -28,68 +100,80 @@
     <div class="container">
         <div id="auth-section">
             <h1>TechThread Pro</h1>
-            <div class="tagline">Omni-Channel Content Transmutation</div>
+            <div class="tagline">AI Content Transmutation</div>
             <input type="email" id="email" class="neu-inset" placeholder="Strategist Email">
-            <button class="neu-button" onclick="signIn()">Enter Command Center</button>
-            <p id="auth-status" style="text-align:center; color: var(--accent); font-size: 0.9rem; margin-top: 15px;"></p>
+            <button class="neu-button" onclick="signIn()">Access Hub</button>
+            <p id="auth-status" style="text-align:center; color: var(--accent); font-size: 0.8rem; margin-top: 15px;"></p>
         </div>
 
         <div id="dashboard" class="hidden">
-            <h1 style="font-size: 1.2rem; text-align: left;">Signal Input</h1>
-            <textarea id="sourceData" class="neu-inset" style="height: 150px; resize: none;" placeholder="Paste Link or Transcript..."></textarea>
-            <button class="neu-button" onclick="transmute()">Transmute Content</button>
-            <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #8b5cf6;">⚡ ANALYZING SIGNAL...</div>
+            <h1 style="font-size: 1.2rem; text-align: left; margin-bottom: 15px;">Input Signal</h1>
+            <textarea id="sourceData" class="neu-inset" style="height: 140px; resize: none;" placeholder="Paste YT Link, Transcript, or Article..."></textarea>
+            <button class="neu-button" onclick="transmute()">Transmute</button>
+            
+            <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: var(--accent);">⚡ SYNCHRONIZING WITH AI...</div>
+            
             <div id="output-container">
                 <div id="output" class="neu-inset" style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;"></div>
-                <button class="copy-btn" onclick="copyResult()">Copy to Clipboard</button>
+                <button class="neu-button" style="font-size: 0.7rem; padding: 12px;" onclick="copyResult()">Copy Thread</button>
             </div>
         </div>
+    </div>
+
+    <div class="social-footer">
+        <a href="https://x.com/Joe_Wills1" target="_blank" class="x-link" title="Follow Joe Wills on X">
+            <svg class="x-icon" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+            </svg>
+        </a>
     </div>
 
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
         const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
-        const GEMINI_KEY = 'AIzaSyCmIiIrCk5Hq9zOns2-gTcewG7lbfnQitk'; 
+        const SUPABASE_KEY = 'ssb_secret_ZgNFBTfsaI_8EnzZHEA1_g_LTrL1GxC'; 
+        const GEMINI_KEY = 'AIzaSyA92egwE7xtnPWjakPkRYSLmHJtt8KxsaQ'; // 🚨 REMEMBER TO ADD YOUR KEY!
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
         window.signIn = async () => {
             const email = document.getElementById('email').value;
-            const { error } = await supabase.auth.signInWithOtp({ 
-                email,
-                options: { emailRedirectTo: window.location.origin + window.location.pathname }
-            });
-            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check email.";
-        }
+            if(!email) return alert("Please enter your email.");
+            const { error } = await supabase.auth.signInWithOtp({ email });
+            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check your email.";
+        };
 
         window.transmute = async () => {
             const data = document.getElementById('sourceData').value;
             const output = document.getElementById('output');
             const loading = document.getElementById('loading');
-            if (!data) return alert("Please provide input.");
+            if (!data) return alert("No signal detected. Please paste content.");
 
             try {
                 loading.classList.remove('hidden');
                 document.getElementById('output-container').style.display = 'none';
+                
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
-                const prompt = `Act as a Viral Growth Strategist. Analyze: ${data}. Create a viral 4-tweet thread for X.`;
+                const prompt = `Act as a Viral X Growth Strategist. Analyze this: ${data}. 
+                Create a high-engagement 4-tweet thread. Use emojis. Focus on $HBAR/$TAO if relevant.`;
+
                 const result = await model.generateContent(prompt);
                 output.innerText = result.response.text();
                 document.getElementById('output-container').style.display = 'block';
             } catch (err) {
-                alert("Error: " + err.message);
+                alert("AI Connection Error: " + err.message);
             } finally {
                 loading.classList.add('hidden');
             }
-        }
+        };
 
         window.copyResult = () => {
-            navigator.clipboard.writeText(document.getElementById('output').innerText);
-            alert("Copied!");
-        }
+            const text = document.getElementById('output').innerText;
+            navigator.clipboard.writeText(text);
+            alert("Thread copied to clipboard!");
+        };
 
         supabase.auth.onAuthStateChange((event, session) => {
             if (session) {
