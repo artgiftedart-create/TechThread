@@ -112,7 +112,12 @@
             <button class="neu-button" onclick="transmute()">Transmute</button>
             
             <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: var(--accent);">⚡ SYNCHRONIZING WITH AI...</div>
-            
+            const { error } = await supabase.auth.signInWithOtp({ 
+    email,
+    options: { 
+        emailRedirectTo: 'https://artgiftedart-create.github.io/TechThread/' 
+    }
+});
             <div id="output-container">
                 <div id="output" class="neu-inset" style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;"></div>
                 <button class="neu-button" style="font-size: 0.7rem; padding: 12px;" onclick="copyResult()">Copy Thread</button>
