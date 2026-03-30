@@ -3,189 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TechThread Pro | Growth Strategist</title>
+    <title>TechThread Pro | Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="importmap">
       { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
     </script>
     <style>
-        :root { --bg: #1a1a1a; --text: #e2e8f0; --shadow-light: #252525; --shadow-dark: #0f0f0f; --accent: #8b5cf6; }
+        :root { 
+            --bg: #1a1a1a; 
+            --text: #e2e8f0; 
+            --shadow-light: #252525; 
+            --shadow-dark: #0f0f0f; 
+            --accent: #8b5cf6; 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
-            margin: 0; 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: var(--bg); 
             color: var(--text); 
             display: flex; 
+            height: 100vh; 
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--bg);
+            padding: 25px 15px;
+            border-right: 1px solid var(--shadow-light);
+            display: flex;
             flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
+            justify-content: space-between;
+        }
+
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; text-align: center; color: var(--accent); }
+        
+        .chat-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: var(--bg);
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .chat-item:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             padding: 20px;
-            box-sizing: border-box;
         }
 
-        .container { 
-            width: 100%; 
-            max-width: 450px; /* Perfect for Laptop & Mobile */
-            padding: 30px; 
-            border-radius: 35px; 
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .user { 
             background: var(--bg); 
-            box-shadow: 15px 15px 30px var(--shadow-dark), -10px -10px 30px var(--shadow-light); 
+            align-self: flex-end; 
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            border-bottom-right-radius: 4px;
         }
 
-        .neu-inset { 
+        .bot { 
             background: var(--bg); 
-            border-radius: 16px; 
-            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light); 
-            border: none; 
-            padding: 18px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            color: var(--text); 
-            outline: none; 
-            margin-bottom: 20px; 
-            font-family: inherit; 
-            font-size: 16px; 
+            align-self: flex-start; 
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            border-bottom-left-radius: 4px;
+            white-space: pre-wrap;
         }
 
-        .neu-button { 
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 16px; 
-            background: var(--bg); 
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); 
-            border: none; 
-            color: var(--accent); 
-            font-weight: 800; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            text-transform: uppercase; 
-            letter-spacing: 1.5px; 
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
-        .neu-button:active { 
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); 
-            transform: scale(0.98);
+        .input-area {
+            display: flex;
+            padding: 20px;
+            gap: 15px;
         }
 
-        .social-footer {
-            margin-top: 40px;
-            text-align: center;
+        .neu-input {
+            flex: 1;
+            padding: 18px;
+            border-radius: 14px;
+            background: var(--bg);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            border: none;
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
         }
 
-        .x-link {
-            display: inline-block;
-            transition: transform 0.2s;
-            padding: 10px;
+        .neu-button {
+            padding: 0 25px;
+            border-radius: 14px;
+            background: var(--bg);
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            border: none;
+            color: var(--accent);
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .x-link:hover { transform: scale(1.15); }
-
-        .x-icon {
-            width: 28px;
-            height: 28px;
-            fill: var(--text);
+        .neu-button:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
         }
 
-        #output-container { margin-top: 25px; display: none; }
+        .social-footer { text-align: center; padding-top: 20px; border-top: 1px solid var(--shadow-light); }
+        .x-icon { width: 24px; height: 24px; fill: var(--text); }
+
         .hidden { display: none; }
-        h1 { text-align: center; font-size: 1.6rem; margin: 0 0 5px 0; letter-spacing: -0.5px; }
-        .tagline { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 30px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="auth-section">
-            <h1>TechThread Pro</h1>
-            <div class="tagline">AI Content Transmutation</div>
-            <input type="email" id="email" class="neu-inset" placeholder="Strategist Email">
-            <button class="neu-button" onclick="signIn()">Access Hub</button>
-            <p id="auth-status" style="text-align:center; color: var(--accent); font-size: 0.8rem; margin-top: 15px;"></p>
+    <div class="sidebar">
+        <div>
+            <h2>TechThread</h2>
+            <div class="chat-item">New Transmutation</div>
+            <div class="chat-item">Signal History</div>
         </div>
-
-        <div id="dashboard" class="hidden">
-            <h1 style="font-size: 1.2rem; text-align: left; margin-bottom: 15px;">Input Signal</h1>
-            <textarea id="sourceData" class="neu-inset" style="height: 140px; resize: none;" placeholder="Paste YT Link, Transcript, or Article..."></textarea>
-            <button class="neu-button" onclick="transmute()">Transmute</button>
-            
-            <div id="loading" class="hidden" style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: var(--accent);">⚡ SYNCHRONIZING WITH AI...</div>
-            const { error } = await supabase.auth.signInWithOtp({ 
-    email,
-    options: { 
-        emailRedirectTo: 'https://artgiftedart-create.github.io/TechThread/' 
-    }
-});
-            <div id="output-container">
-                <div id="output" class="neu-inset" style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;"></div>
-                <button class="neu-button" style="font-size: 0.7rem; padding: 12px;" onclick="copyResult()">Copy Thread</button>
-            </div>
+        
+        <div class="social-footer">
+            <a href="https://x.com/Joe_Wills1" target="_blank" class="x-link">
+                <svg class="x-icon" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+            </a>
         </div>
     </div>
 
-    <div class="social-footer">
-        <a href="https://x.com/Joe_Wills1" target="_blank" class="x-link" title="Follow Joe Wills on X">
-            <svg class="x-icon" viewBox="0 0 24 24">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-            </svg>
-        </a>
+    <div class="main">
+        <div class="chat-box" id="chatBox">
+            <div class="message bot">Welcome, Strategist. Paste a video link or transcript below to begin the transmutation.</div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="userInput" class="neu-input" placeholder="Paste link or signal data..." onkeypress="handleKey(event)" />
+            <button class="neu-button" onclick="sendMessage()">TRANSMUTE</button>
+        </div>
     </div>
 
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
+        // --- AUTH & CONFIGURATION ---
         const SUPABASE_URL = 'https://jlcotzxaqmafljaezses.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY'; 
-        const GEMINI_KEY = 'AIzaSyA92egwE7xtnPWjakPkRYSLmHJtt8KxsaQ'; // 🚨 REMEMBER TO ADD YOUR KEY!
+        const SUPABASE_ANON_KEY = 'sb_publishable_nldmcqvxDob8TuZt06FSLQ_WiSqTsLY';
+        const GEMINI_KEY = 'AIzaSyA92egwE7xtnPWjakPkRYSLmHJtt8KxsaQ';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 
-        window.signIn = async () => {
-            const email = document.getElementById('email').value;
-            if(!email) return alert("Please enter your email.");
-            const { error } = await supabase.auth.signInWithOtp({ email });
-            document.getElementById('auth-status').innerText = error ? error.message : "Magic Link sent! Check your email.";
+        // --- CORE FUNCTIONS ---
+        
+        window.handleKey = (e) => {
+            if (e.key === 'Enter') sendMessage();
         };
 
-        window.transmute = async () => {
-            const data = document.getElementById('sourceData').value;
-            const output = document.getElementById('output');
-            const loading = document.getElementById('loading');
-            if (!data) return alert("No signal detected. Please paste content.");
+        window.sendMessage = async () => {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            input.value = '';
+
+            const loadingId = addMessage("⚡ ANALYZING SIGNAL...", 'bot');
 
             try {
-                loading.classList.remove('hidden');
-                document.getElementById('output-container').style.display = 'none';
+                // Using 1.5 Flash for speed and high context window
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                 
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
-                const prompt = `Act as a Viral X Growth Strategist. Analyze this: ${data}. 
-                Create a high-engagement 4-tweet thread. Use emojis. Focus on $HBAR/$TAO if relevant.`;
+                const prompt = `
+                    Act as a World-Class Digital Content Strategist. 
+                    Source Material: ${text}
+                    
+                    Task:
+                    1. Analyze the core value in this link/text.
+                    2. Create a high-engagement X (Twitter) thread.
+                    3. MUST be at least 8 tweets long.
+                    4. Tweet 1: Scroll-stopping hook.
+                    5. Tweets 2-7: Deep-dive value points.
+                    6. Tweet 8: Conclusion and CTA to follow @Joe_Wills1.
+                    
+                    Format each tweet clearly as "Tweet 1:", "Tweet 2:", etc.
+                `;
 
                 const result = await model.generateContent(prompt);
-                output.innerText = result.response.text();
-                document.getElementById('output-container').style.display = 'block';
+                const response = await result.response;
+                updateMessage(loadingId, response.text());
             } catch (err) {
-                alert("AI Connection Error: " + err.message);
-            } finally {
-                loading.classList.add('hidden');
+                updateMessage(loadingId, "Error: " + err.message);
+                console.error(err);
             }
         };
 
-        window.copyResult = () => {
-            const text = document.getElementById('output').innerText;
-            navigator.clipboard.writeText(text);
-            alert("Thread copied to clipboard!");
-        };
+        // --- AUTHENTICATION REPAIR ---
+        // Call this function when you want to sign someone up/in
+        async function signUpUser(email, password) {
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+            });
+            if (error) console.error("Auth Error:", error.message);
+            else console.log("Sign-up successful! Check your email for confirmation.");
+        }
 
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
+        // --- UI HELPERS ---
+        function addMessage(text, sender) {
+            const chatBox = document.getElementById('chatBox');
+            const msg = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            msg.id = id;
+            msg.classList.add('message', sender);
+            
+            if (sender === 'bot') {
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerText = 'Copy';
+                btn.onclick = () => {
+                    navigator.clipboard.writeText(msg.innerText.replace('Copy', ''));
+                    btn.innerText = 'Copied!';
+                    setTimeout(() => btn.innerText = 'Copy', 2000);
+                };
+                msg.appendChild(btn);
             }
-        });
+
+            const textNode = document.createTextNode(text);
+            msg.appendChild(textNode);
+            chatBox.appendChild(msg);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return id;
+        }
+
+        function updateMessage(id, newText) {
+            const msg = document.getElementById(id);
+            if (msg) {
+                // Preserve the copy button if it exists
+                const btn = msg.querySelector('.copy-btn');
+                msg.innerText = '';
+                if (btn) msg.appendChild(btn);
+                msg.appendChild(document.createTextNode(newText));
+            }
+            const chatBox = document.getElementById('chatBox');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     </script>
 </body>
 </html>
